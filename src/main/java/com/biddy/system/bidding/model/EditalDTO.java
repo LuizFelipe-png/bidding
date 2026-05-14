@@ -10,17 +10,17 @@ import java.sql.Date;
  *
  * @author Aluno
  */
-public class EditaisDTO {
-    private int id;
+public class EditalDTO {
+    private Long id;
     private String titulo;
     private String descricao;
     private Date data_fechamento;
-    private Boolean Status;
+    private String Status;
 
-    public EditaisDTO() {
+    public EditalDTO() {
     }
 
-    public EditaisDTO(int id, String titulo, String descricao, Date data_fechamento, Boolean Status) {
+    public EditalDTO(Long id, String titulo, String descricao, Date data_fechamento, String Status) {
         this.id = id;
         this.titulo = titulo;
         this.descricao = descricao;
@@ -28,11 +28,11 @@ public class EditaisDTO {
         this.Status = Status;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -60,13 +60,13 @@ public class EditaisDTO {
         this.data_fechamento = data_fechamento;
     }
 
-    public Boolean getStatus() {
+    public String getStatus() {
         return Status;
     }
 
-    public void setStatus(Boolean Status) {
+    public void setStatus(String Status) {
         this.Status = Status;
     }
-    
-    
+
+     
 }

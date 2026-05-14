@@ -81,8 +81,10 @@ public class TokenService {
 
                 // Adiciona um dado extra no token.
                 // Aqui está salvando o usuário inteiro.
-                .claim("usuario", user)
+                .claim("nome", user.getNome())
 
+                .claim("role", user.getRole())
+                
                 // Define data de criação do token.
                 .issuedAt(new Date())
 
@@ -105,7 +107,11 @@ public class TokenService {
                 .parseSignedClaims(token)
                 .getPayload();
         
-        UserDTO user = claims.get("usuario", UserDTO.class);
+        //Recupera o usuário do claim "usuario"
+        UserDTO user = new UserDTO();
+        user.setId(claims.get("id", Long.class));
+        user.setNome(claims.get("nome", String.class));
+        user.setRole(claims.get("role", String.class));
         
         return user;
     }
