@@ -4,8 +4,10 @@
  */
 package com.biddy.system.bidding.service;
 
+import com.biddy.system.bidding.model.EditalDTO;
 import com.biddy.system.bidding.model.LanceDTO;
 import com.biddy.system.bidding.model.UserDTO;
+import com.biddy.system.bidding.repository.EditalRepository;
 import com.biddy.system.bidding.repository.LanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
@@ -25,26 +27,31 @@ public class LanceService {
     @Autowired
     private TokenService tokenService;
     
-    public void cadastrarLance(LanceDTO lance, String token){
+    @Autowired
+    private EditalRepository editalRepository;
+    
+    public void cadastrarLance(Long id, LanceDTO lance, String token){
+        if(tokenService.validarToken(token)){
+            
+        } else {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Token inválido!");
+        }
         UserDTO usuarioLogado = tokenService.extrairClaims(token);
         
-        if (usuarioLogado.getRole().equals("COMPRADOR")) {
-            String mensagem = "";
-            if(lance.getValor().equals("")){
-                mensagem += "Valor não preenchido!\n";
-            }if(lance.getData_lance().equals("")){
-                mensagem += "A data do lance não preenchida!\n";
-            }if(!mensagem.equals("")){
-                throw new ResponseStatusException(HttpStatusCode.valueOf(400), mensagem);
-            }
+        if (usuarioLogado.getRole().equals("FORNECEDOR")) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(403), "Você precisa ser Fornecedor para fazer um lance!");
+        }
+        EditalDTO edital = editalRepository.getById(id);
         
-            int linhas = repository.cadastrarLance(lance);
-        if(!mensagem.equals("")){
-            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Erro ao cadastrar ao banco de dados!");
+        if(!edital.getStatus().equals("ABERTO")){
+            throw new ResponseStatusException(HttpStatusCode.valueOf(400),
+            "Você não pode criar lances para um edital fechado!");
+        }
+        if(edital.getData_fechamento().before(lance.getData_lance())){
+            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Data do lance posterior ao fechamento");
         }
         else {
-            throw new ResponseStatusException(HttpStatusCode.valueOf(403), "Acesso não autorizado");
-            }
+            throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Token inválido!");
         }
     }
 }

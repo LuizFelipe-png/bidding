@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.naming.spi.DirStateFactory.Result;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -40,7 +41,7 @@ public class EditalRepository {
     }
     
     public List<EditalDTO> ler(){
-        List<EditalDTO> lista = new ArrayList<>();
+        List<EditalDTO> lista = new ArrayList();
         try{
            Connection conn = Conexao.conectar();
            PreparedStatement stmt = null;
@@ -50,18 +51,40 @@ public class EditalRepository {
            rs = stmt.executeQuery();
            
            while(rs.next()){
-           EditalDTO editais = new EditalDTO(); 
-               
-           stmt.setString(1, editais.getTitulo());
-           stmt.setString(2, editais.getDescricao());
-           stmt.setDate(3, editais.getData_fechamento());
-           stmt.setString(4, editais.getStatus());
+           EditalDTO editais = new EditalDTO();  
+           editais.setId(rs.getLong("id"));
+           editais.setTitulo(rs.getString("titulo"));
+           editais.setDescricao(rs.getString("descricao"));
+           editais.setData_fechamento(rs.getDate("data_fechamento"));
+           editais.setStatus(rs.getString("status"));
            
-           lista.add(editais);
+           lista.add(editais);//colocando os dados em uma nova linha na lista
            }
         } catch(SQLException e) {
             e.printStackTrace();
         }
         return lista;
+    }
+    
+    public EditalDTO getById(Long id){
+        EditalDTO edital = new EditalDTO();
+        try{
+            Connection conn = Conexao.conectar();
+            PreparedStatement stmt = null;
+            ResultSet rs = null;
+            
+            stmt = conn.prepareStatement("SELECT * FROM editais WHERE id = ?");
+            stmt.setLong(1, id);
+            rs = stmt.executeQuery();
+            
+            if(rs.next()){
+                edital.setData_fechamento(rs.getDate("data_fechamento"));
+                edital.setStatus(rs.getString("status"));
+            }
+            
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+        return edital;
     }
 }
