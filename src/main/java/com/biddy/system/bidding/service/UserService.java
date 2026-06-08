@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.biddy.system.bidding.service;
 
 import com.biddy.system.bidding.model.UserDTO;
@@ -12,10 +8,6 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-/**
- *
- * @author Aluno
- */
 @Service
 public class UserService {
     
@@ -25,37 +17,47 @@ public class UserService {
     @Autowired
     private TokenService tokenService;
     
-    public void register(UserDTO user){
+    public void register(UserDTO user) {
         String mensagem = "";
-        if(user.getNome().equals("")){
+        
+        if (user.getNome() == null || user.getNome().trim().isEmpty()) {
             mensagem = "Nome não preenchido!";
-        } else if(user.getEmail().equals("")){
+        } else if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
             mensagem = "Email não preenchido!";
-        } else if (user.getSenha().equals("")){
+        } else if (user.getSenha() == null || user.getSenha().trim().isEmpty()) {
             mensagem = "Senha não preenchida!";
-        } else if (user.getRole().equals("")){
-            mensagem = ("FORNECEDOR");
         }
         
-        if(!mensagem.equals("")){
+        if (!mensagem.isEmpty()) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(400), mensagem);
+        }
+        
+        if (user.getRole() == null || user.getRole().trim().isEmpty()) {
+            user.setRole("FORNECEDOR");
         }
         
         repository.register(user);
     }
     
-    public String logar(UserRequestDTO user){
+    public String logar(UserRequestDTO user) {
         String mensagem = "";
-        if(user.getEmail().equals("")){
+        
+        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
             mensagem = "Email não preenchido!";
-        }else if (user.getSenha().equals("")){
-            mensagem = "Senha não preenchido!";
+        } else if (user.getSenha() == null || user.getSenha().trim().isEmpty()) {
+            mensagem = "Senha não preenchida!";
         }
         
-        if(!mensagem.equals("")){
+        if (!mensagem.isEmpty()) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(400), mensagem);
         }
+        
         UserDTO dadosLogado = repository.logar(user.getEmail(), user.getSenha());
+        
+        if (dadosLogado == null || dadosLogado.getId() == null) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(401), "E-mail ou senha incorretos!");
+        }
+        
         return tokenService.gerarToken(dadosLogado);
     }
 }
