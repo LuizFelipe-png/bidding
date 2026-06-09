@@ -8,7 +8,6 @@ import com.biddy.system.bidding.model.UserDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import static io.jsonwebtoken.Jwts.claims;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import java.util.Date;
@@ -50,7 +49,6 @@ public class TokenService {
         if(
                 
            // Verifica se o ID é nulo ou 0.
-           // AQUI TEM UM PROBLEMA:
            // Se getId() for Integer, tudo bem.
            // Mas se for int, ele nunca será null.
            (user.getId() == 0 || user.getId() == null) ||
