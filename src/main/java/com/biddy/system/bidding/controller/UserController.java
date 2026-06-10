@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.bidding.system.bidding.controller;
+package com.biddy.system.bidding.controller;
 
 import com.biddy.system.bidding.model.UserDTO;
 import com.biddy.system.bidding.model.UserRequestDTO;

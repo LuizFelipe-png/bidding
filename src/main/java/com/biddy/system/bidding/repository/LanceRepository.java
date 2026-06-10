@@ -4,6 +4,7 @@
  */
 package com.biddy.system.bidding.repository;
 
+import com.bidding.system.bidding.model.EditalDTO;
 import com.biddy.system.bidding.model.LanceDTO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,22 +17,22 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class LanceRepository {
-    
-    public int cadastrarLance(LanceDTO lances){
-        try{
-           Connection conn = Conexao.conectar();
-           PreparedStatement stmt = null;
-           stmt = conn.prepareStatement("INSERT INTO lances (valor, data_lance, id_edital, id_usuario)"
-                    + "VALUES (?,?,?,?)");
-           
-           stmt.setDouble(1, lances.getValor());
-           stmt.setDate(2, lances.getData_lance());
-           stmt.setLong(3, lances.getId_edital());
-           stmt.setLong(4, lances.getId_usuario());
-           
-           return stmt.executeUpdate();
-        } catch(SQLException e) {
+    public int criarLance(LanceDTO lance){
+
+        try {
+            Connection conn = Conexao.conectar();
+            PreparedStatement stmt = null;
+
+            stmt = conn.prepareStatement("INSERT INTO lances (valor, data_lance) VALUES (?,?)");
+
+            stmt.setDouble(1, lance.getValor());
+            stmt.setDate(2, lance.getData_lance());
+
+            return stmt.executeUpdate();
+
+        } catch (SQLException e) {
             e.printStackTrace();
+
         }
         return 0;
     }

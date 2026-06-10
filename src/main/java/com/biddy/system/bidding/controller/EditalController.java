@@ -4,15 +4,10 @@
  */
 package com.biddy.system.bidding.controller;
 
-import com.biddy.system.bidding.model.EditalDTO;
-import com.biddy.system.bidding.model.LanceDTO;
+// Importa as classes necessárias para o controller
+import com.bidding.system.bidding.model.EditalDTO;
 import com.biddy.system.bidding.service.EditalService;
-import com.biddy.system.bidding.service.LanceService;
-import com.biddy.system.bidding.service.TokenService;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -21,38 +16,31 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
- * @author Aluno
+ * @author Usuario
  */
+
+// Indica que esta classe é um controller REST
 @RestController
-@RequestMapping("/api/edital")
+// Define o caminho base para as rotas deste controller
+@RequestMapping("/api/editais")
 public class EditalController {
-    
+    // Injeta automaticamente uma instância de EditalService
     @Autowired
-    EditalService service;
-    
-    @Autowired
-    private TokenService tokenService;
-    
-    @Autowired
-    private LanceService lanceService;
-    
+    private EditalService service;
+
+    // Mapeia requisições POST para /api/editais
     @PostMapping
-    public String cadastrarEdital (@RequestHeader("Authorization") String auth, @RequestBody EditalDTO edital){
+    public String cadastrarEdital(
+            // Recebe o header Authorization com o token JWT
+            @RequestHeader("Authorization") String auth,
+            // Recebe o corpo da requisição com os dados do edital
+            @RequestBody EditalDTO edital
+    ) {
+        // Remove o prefixo "Bearer " do token
         String token = auth.replace("Bearer ", "");
+        // Chama o serviço para criar o edital
         service.criarEdital(edital, token);
+        // Retorna mensagem de sucesso
         return "Edital Cadastrado com sucesso!";
     }
-    
-    @GetMapping
-    public List<EditalDTO> lerEditais(@RequestHeader("Authorization") String auth){
-        String token = auth.replace("Bearer ", "");
-        return service.lerEditais(token);
-    }
-    
-    @PostMapping("{id}/lances")
-    public String cadastrarLance (@RequestHeader("Authorization") String auth, @RequestBody LanceDTO lance, @PathVariable Long id){
-        String token = auth.replace("Bearer ", "");
-        lanceService.cadastrarLance(id, lance, token);
-        return "Lance cadastrado com sucesso!";
-    } 
 }
